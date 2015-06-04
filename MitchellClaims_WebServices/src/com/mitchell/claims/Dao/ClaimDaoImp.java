@@ -201,7 +201,7 @@ public class ClaimDaoImp implements ClaimDao {
 	}
 
 	@Override
-	public boolean deleteClaim(String claimNumber) {
+	public void deleteClaim(String claimNumber) {
 		// TODO Auto-generated method stub
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -210,14 +210,12 @@ public class ClaimDaoImp implements ClaimDao {
 			ps = con.prepareStatement("delete Claims,LossInfoType,VehicleInfoType from claims,LossInfoType,VehicleInfoType   where claims.ClaimNumber=? and claims.Claim_id = VehicleInfoType.Claim_id and claims.Claim_id = LossInfoType.Claim_id;");
 			ps.setString(1, claimNumber);
 			int a = ps.executeUpdate();
-			if (a != 0) {
-				return true;
-			}
+			
 
 		} catch (Exception ex) {
 
 			ex.printStackTrace();
-			return false;
+			
 		} finally {
 			try {
 				ps.close();
@@ -226,7 +224,7 @@ public class ClaimDaoImp implements ClaimDao {
 				ex.printStackTrace();
 			}
 		}
-		return false;
+		
 	}
 
 	@Override

@@ -54,6 +54,7 @@ Notes
 - I used Hashmap for temporary storage and I also provided CalimDaoImp.java if you want to use database.
 -Create and update request url contain xml file.
 -Read respnse will be in xml.
+- I tried to implement one exception by jersey.which returns xml error message.
 
 
 Files Included
@@ -82,6 +83,9 @@ Source Files
 
  4) com.mitchell.claims.services
    --> service class which contain service methodes.
+
+ 5) com.mitchell.claims.exception
+   --> Exception handler for data not found.
  
 .
 

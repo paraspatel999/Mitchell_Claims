@@ -1,8 +1,6 @@
 package com.mitchell.claims.Dao;
 
-
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,12 +8,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import com.mitchell.claims.Dao.ClaimDao;
+import com.mitchell.claims.exceptions.DataNotFoundException;
 import com.mitchell.claims.model.CauseOfLossCode;
 import com.mitchell.claims.model.LossInfoType;
 import com.mitchell.claims.model.MitchellClaimType;
 import com.mitchell.claims.model.VehicleInfoType;
 import com.mitchell.claims.model.VehicleListType;
+import com.sun.jersey.api.NotFoundException;
 
 public class Storage implements ClaimDao {
 
@@ -76,7 +80,12 @@ public class Storage implements ClaimDao {
 	public MitchellClaimType getClaim(String claimNumber) {
 
 		if (claimNumber != null && !claimNumber.equals("")) {
-			return store.get(claimNumber);
+			MitchellClaimType claim = store.get(claimNumber);
+			if (claim == null) {
+				throw new DataNotFoundException("ClaimNumber " + claimNumber
+						+ " Not Found");
+			}
+			return claim;
 		}
 		return null;
 	}
@@ -101,21 +110,23 @@ public class Storage implements ClaimDao {
 				return true;
 
 			}
-
-			// cl.setAssignedAdjusterID(id);
+			throw new DataNotFoundException("Claim is not available");
 
 		}
 		return false;
 	}
 
 	@Override
-	public boolean deleteClaim(String claimNumber) {
-
+	public void deleteClaim(String claimNumber) {
 		if (claimNumber != null && !claimNumber.equals("")) {
+			MitchellClaimType claim = store.get(claimNumber);
+			if (claim == null) {
+				throw new DataNotFoundException("claim is not available");
+			}
 			store.remove(claimNumber);
-			return true;
+
 		}
-		return false;
+
 	}
 
 	@Override

@@ -1,14 +1,7 @@
 package com.mitchell.claims.services;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
-
-
-
-
-
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -29,81 +22,75 @@ import com.mitchell.claims.model.MitchellClaimType;
 import com.mitchell.claims.model.ObjectFactory;
 import com.mitchell.claims.Dao.Storage;
 
-
 @Path("/mitchellclaims")
 public class MichellClaimService {
 
-	
-	ObjectFactory ob= new ObjectFactory();
+	ObjectFactory ob = new ObjectFactory();
 	ClaimDao dao = new Storage();
-	
+
 	@GET
 	@Path("/read_claim/{claimNumber}")
-	@Produces(MediaType.APPLICATION_XML)	
-	public JAXBElement<MitchellClaimType> getClaim(@PathParam("claimNumber")String claimNumber){
-		
+	@Produces(MediaType.APPLICATION_XML)
+	public JAXBElement<MitchellClaimType> getClaim(
+			@PathParam("claimNumber") String claimNumber) {
+
 		return ob.createMitchellClaim(dao.getClaim(claimNumber));
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-    public MitchellClaimType getVehicleInfo(@QueryParam("claimNumber")String claimNumber,@QueryParam("licPlate")String licPlate){
+	public MitchellClaimType getVehicleInfo(
+			@QueryParam("claimNumber") String claimNumber,
+			@QueryParam("licPlate") String licPlate) {
 		return dao.getVehicleInfo(claimNumber, licPlate);
 	}
-	
+
 	@PUT
 	@Path("/update_claim")
 	@Consumes(MediaType.APPLICATION_XML)
-	@Produces(MediaType.TEXT_PLAIN)
-	public String updateClaim(MitchellClaimType claim){
-		
-		boolean flag=dao.updateClaim(claim);
-		if(flag == true){
-			return "Successfully updated";
-		}
-		return "Internal error.Try again";
-		 		
+	@Produces(MediaType.APPLICATION_XML)
+	public String updateClaim(MitchellClaimType claim) {
+
+		dao.updateClaim(claim);
+
+		return "Successfully updated";
+
 	}
-	
+
 	@GET
 	@Path("/{startDate}/{endDate}")
 	@Produces(MediaType.APPLICATION_XML)
-	public List<JAXBElement<MitchellClaimType>> getListOfClaims(@PathParam("startDate")String startDate,@PathParam("endDate")String endDate){
-	
-		List<JAXBElement<MitchellClaimType>> list = new ArrayList<JAXBElement<MitchellClaimType>>();	 
-		for(MitchellClaimType  claim: dao.getList(startDate, endDate) ){
-		list.add(ob.createMitchellClaim(claim));
+	public List<JAXBElement<MitchellClaimType>> getListOfClaims(
+			@PathParam("startDate") String startDate,
+			@PathParam("endDate") String endDate) {
+
+		List<JAXBElement<MitchellClaimType>> list = new ArrayList<JAXBElement<MitchellClaimType>>();
+		for (MitchellClaimType claim : dao.getList(startDate, endDate)) {
+			list.add(ob.createMitchellClaim(claim));
 		}
 		return list;
 	}
-	
-	
+
 	@POST
 	@Path("/create_claim")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String createClaim(MitchellClaimType claim){	
-		
-		boolean flag=dao.insertClaim(claim);
-		if(flag == true){
+	public String createClaim(MitchellClaimType claim) {
+
+		boolean flag = dao.insertClaim(claim);
+		if (flag == true) {
 			return "Successfully inserted data";
 		}
 		return "Internal error. Try Again";
 	}
-	
+
 	@DELETE
 	@Path("/delete_claim/{ClaimNumber}")
-	@Produces(MediaType.TEXT_PLAIN)
-	public String deleteClaim(@PathParam("ClaimNumber")String claimNumber){
-		boolean flag = dao.deleteClaim(claimNumber);
-		if(flag == true){
-			return "successfully deleted";
-		}
-		return "Internal error";
-	}
-		
+	@Produces(MediaType.APPLICATION_XML)
+	public String deleteClaim(@PathParam("ClaimNumber") String claimNumber) {
+		dao.deleteClaim(claimNumber);
+		return "successfully deleted";
 
+	}
 
 }
-
-
